@@ -1,22 +1,15 @@
 import type { StorybookConfig } from '@storybook/core-common';
-
 import { mergeConfig } from 'vite';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
-
 const config: StorybookConfig = {
-  core: { builder: '@storybook/builder-vite' },
-  stories: [
-    '../src/app/**/*.stories.mdx',
-    '../src/app/**/*.stories.@(js|jsx|ts|tsx)',
-  ],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
+  core: {},
+  stories: ['../src/app/**/*.mdx', '../src/app/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: ['@storybook/addon-essentials', '@storybook/addon-a11y', '@storybook/addon-mdx-gfm'],
   async viteFinal(config: any) {
     return mergeConfig(config, {
-      plugins: [
-        viteTsConfigPaths({
-          root: '../../../',
-        }),
-      ],
+      plugins: [viteTsConfigPaths({
+        root: '../../../'
+      })]
     });
   },
   typescript: {
@@ -33,14 +26,21 @@ const config: StorybookConfig = {
       // makes string and boolean types that can be undefined appear as inputs and switches
       shouldRemoveUndefinedFromOptional: true,
       // Filter out third-party props from node_modules except @mui packages
-      propFilter: (prop: { parent: { fileName: string } }) =>
-        prop.parent
-          ? !/node_modules\/(?!@mui)/.test(prop.parent.fileName)
-          : true,
-    },
+      propFilter: (prop: {
+        parent: {
+          fileName: string;
+        };
+      }) => prop.parent ? !/node_modules\/(?!@mui)/.test(prop.parent.fileName) : true
+    }
   },
-} as StorybookConfig;
-
+  framework: {
+    name: '@storybook/react-vite',
+    options: {}
+  },
+  docs: {
+    autodocs: true
+  }
+};
 module.exports = config;
 
 // To customize your Vite configuration you can use the viteFinal field.
